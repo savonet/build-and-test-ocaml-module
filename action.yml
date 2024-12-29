@@ -14,7 +14,7 @@ runs:
     - name: Checkout latest code
       uses: actions/checkout@v1
     - name: Install ocaml
-      uses: toots/setup-ocaml@master
+      uses: ocaml/setup-ocaml@v3
       with:
         ocaml-compiler: ${{ inputs.ocaml-compiler }}
         opam-depext: true
