@@ -28,6 +28,16 @@ runs:
       run: |
         opam install --verbose -y . ${{ inputs.extra-packages }}
       shell: pwsh
+    - name: Install test dependencies
+      if: runner.os != 'Windows'
+      run: |
+        opam --cli=2.1 install --verbose --confirm-level=unsafe-yes --deps-only --with-test .
+      shell: bash
+    - name: Install test dependencies
+      if: runner.os == 'Windows'
+      run: |
+        opam install --verbose -y --deps-only --with-test .
+      shell: pwsh
     - name: Install module
       if: runner.os != 'Windows'
       run: |
