@@ -8,6 +8,10 @@ inputs:
     description: OCaml compiler
     required: false
     default: 4.14.x
+  test-target:
+    description: Dune test target alias (e.g., runtest, citest)
+    required: false
+    default: runtest
 runs:
   using: composite
   steps:
@@ -22,10 +26,20 @@ runs:
     - name: Install module
       if: runner.os == 'Windows'
       run: |
-        opam install --verbose -y --with-test . ${{ inputs.extra-packages }}
+        opam install --verbose -y . ${{ inputs.extra-packages }}
       shell: pwsh
     - name: Install module
       if: runner.os != 'Windows'
       run: |
-        opam --cli=2.1 install --verbose --confirm-level=unsafe-yes --with-test . ${{ inputs.extra-packages }}
+        opam --cli=2.1 install --verbose --confirm-level=unsafe-yes . ${{ inputs.extra-packages }}
+      shell: bash
+    - name: Run tests
+      if: runner.os == 'Windows'
+      run: |
+        opam exec -- dune build @${{ inputs.test-target }}
+      shell: pwsh
+    - name: Run tests
+      if: runner.os != 'Windows'
+      run: |
+        opam exec -- dune build @${{ inputs.test-target }}
       shell: bash
